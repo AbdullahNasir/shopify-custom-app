@@ -17,14 +17,6 @@ app.get('/', (req, res) => {
   res.send('GET Home page');
 });
 
-app.post('/', (req, res) => {
-  console.log('POST Home page');
-  console.log('req.body', req.body);
-  console.log('req.params', req.params);
-  console.log('req.query', req.query);
-  res.send('POST Home page');
-});
-
 app.use('/shopify', require('./routes/shopify'));
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
