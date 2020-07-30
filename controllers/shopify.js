@@ -1,13 +1,17 @@
 const axios = require('axios');
+const { shopifyScopes } = require('../constants');
 
 exports.initiateAppAuthorization = async (req, res) => {
-  const forwardingAddress = 'https://33842247f69d.ngrok.io';
   try {
     const { shop } = req.query;
     if (shop) {
       const state = process.env.SHOPIFY_API_STATE;
-      const redirectURI = `${forwardingAddress}/shopify/callback`;
-      const installURL = `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products&state=${state}&redirect_uri=${redirectURI}`;
+      const redirectURI = `${process.env.NGROK_APP_URL}/shopify/callback`;
+      const installURL = `https://${shop}/admin/oauth/authorize?client_id=${
+        process.env.SHOPIFY_API_KEY
+      }&scope=${shopifyScopes.join(
+        ' '
+      )}&state=${state}&redirect_uri=${redirectURI}`;
       return res.redirect(installURL);
     } else {
       return res.status(400).send('Missinge shop parameter');
