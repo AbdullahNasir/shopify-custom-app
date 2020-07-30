@@ -5,7 +5,7 @@ exports.initiateAppAuthorization = async (req, res) => {
   try {
     const { shop } = req.query;
     if (shop) {
-      const state = '12345abcState';
+      const state = process.env.SHOPIFY_API_STATE;
       const redirectURI = `${forwardingAddress}/shopify/callback`;
       const installURL = `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products&state=${state}&redirect_uri=${redirectURI}`;
       return res.redirect(installURL);
@@ -20,7 +20,7 @@ exports.initiateAppAuthorization = async (req, res) => {
 exports.finishAppAuthorization = async (req, res) => {
   try {
     const { shop, hmac, code, state } = req.query;
-    if (state !== '12345abcState') {
+    if (state !== process.env.SHOPIFY_API_STATE) {
       return res.status(403).send('Request origin cannot be verified');
     }
 
