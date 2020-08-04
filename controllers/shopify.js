@@ -1,4 +1,5 @@
 const axios = require('axios');
+const Shop = require('../models/Shop');
 const { shopifyScopes } = require('../constants');
 
 exports.initiateAppAuthorization = async (req, res) => {
@@ -41,6 +42,15 @@ exports.finishAppAuthorization = async (req, res) => {
         }
       );
       console.log('credentials', credentials);
+
+      // save shop credentials in DB
+      let newShop = new Shop({
+        shop,
+        accessToken: credentials.access_token,
+        scopes: credentials.scope.split(','),
+      });
+      newShop = await newShop.save();
+      console.log('newShop', newShop);
 
       // Use access token to make API call to 'shop' endpoint
       const responseShop = await axios.get(
