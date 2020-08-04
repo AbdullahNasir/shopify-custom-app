@@ -17,6 +17,13 @@ app.get('/', (req, res) => {
   res.send('GET Home page');
 });
 
+app.post('/customer', (req, res) => {
+  const { body, query, params } = req;
+  console.log('body', body);
+  console.log('query', query);
+  console.log('params', params);
+});
+
 app.use('/shopify', require('./routes/shopify'));
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
