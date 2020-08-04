@@ -1,1 +1,1 @@
-exports.shopifyScopes = ['read_products', 'read_customers'];
+exports.shopifyScopes = ['write_customers', 'read_customers', 'read_products'];

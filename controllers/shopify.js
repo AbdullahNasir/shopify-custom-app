@@ -18,6 +18,7 @@ exports.initiateAppAuthorization = async (req, res) => {
       return res.status(400).send('Missinge shop parameter');
     }
   } catch (error) {
+    console.log('error', error);
     return res.status(500).send('Internal Server Error');
   }
 };
@@ -46,7 +47,7 @@ exports.finishAppAuthorization = async (req, res) => {
       // save shop credentials in DB
       let newShop = new Shop({
         shop,
-        accessToken: credentials.access_token,
+        access_token: credentials.access_token,
         scopes: credentials.scope.split(','),
       });
       newShop = await newShop.save();
