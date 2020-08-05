@@ -5,8 +5,12 @@ const Customer = require('../models/Customer');
 exports.sendOTP = async (req, res) => {
   try {
     // grab customer phone number
-    const { first_name, last_name, email, phone, password } = req.body;
-    console.log('phone', phone);
+    const { first_name, last_name, email, phone, password, shop } = req.body;
+
+    // validation
+    if (!first_name || !last_name || !email || !phone || !password || !shop) {
+      return res.status(400).send('Missing Required Parameters');
+    }
 
     // save customer data
     let newCustomer = new Customer({
@@ -17,11 +21,11 @@ exports.sendOTP = async (req, res) => {
       password,
     });
     newCustomer = await newCustomer.save();
-    console.log('newCustomer', newCustomer);
 
     // TODO send otp to given phone number
+
     // redirect user to otp verification page
-    res.redirect('https://plaantz.myshopify.com/pages/verify-otp');
+    res.redirect(`https://${shop}/pages/verify-otp?id=${newCustomer._id}`);
   } catch (error) {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');
@@ -31,13 +35,21 @@ exports.sendOTP = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     // get user inputted otp
-    const { otp } = req.body;
-    console.log('otp', otp);
-    // verify otp
+    const { otp, shop } = req.body;
+
+    // validation
+    if (!otp || !shop) {
+      return res.status(400).send('Missing Required Parameters');
+    }
+
+    // TODO verify otp
 
     // get access token
-    const credentials = await Shop.findOne({ shop: 'plaantz.myshopify.com' });
-    console.log('credentials', credentials);
+    const { access_token } = await Shop.findOne({ shop });
+    if (!access_token) {
+      return res.status(400).send('Invalid Shop');
+    }
+
     // create user by making a POST request to Shopify Admin API
     const customer = await Customer.findById('5f29409abc265644280aee14', {
       _id: 0,
@@ -50,12 +62,13 @@ exports.verifyOTP = async (req, res) => {
       },
       {
         headers: {
-          'X-Shopify-Access-Token': credentials.access_token,
+          'X-Shopify-Access-Token': access_token,
         },
       }
     );
     console.log('data', data);
     // redirect to success page
+    return res.redirect(`https://${shop}/account/login`);
   } catch (error) {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');

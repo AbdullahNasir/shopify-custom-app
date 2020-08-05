@@ -25,7 +25,6 @@ const CustomerSchema = new Schema(
     },
     password_confirmation: {
       type: String,
-      // required: true,
     },
     verified_email: {
       type: Boolean,
