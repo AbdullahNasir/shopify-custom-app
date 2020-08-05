@@ -1,0 +1,21 @@
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+      <div class="form-vertical">
+        <h1 class="text-center">Verify OTP</h1>
+        <form
+          action="https://f531b812bae9.ngrok.io/customers/verify-otp"
+          method="POST"
+        >
+          <input type="hidden" name="id" value="{{ id }}" />
+          <input type="hidden" name="shop" value="{{ shop }}" />
+          <label for="otp">OTP</label>
+          <input type="text" name="otp" id="otp" value="" />
+          <p class="text-center">
+            <input type="submit" value="Verify" class="btn" />
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

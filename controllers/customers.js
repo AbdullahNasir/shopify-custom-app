@@ -25,7 +25,7 @@ exports.sendOTP = async (req, res) => {
     // TODO send otp to given phone number
 
     // redirect user to otp verification page
-    res.redirect(`https://${shop}/pages/verify-otp?id=${newCustomer._id}`);
+    res.redirect(`https://${shop}/apps/verify-otp?id=${newCustomer._id}`);
   } catch (error) {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');
@@ -35,10 +35,10 @@ exports.sendOTP = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     // get user inputted otp
-    const { otp, shop } = req.body;
+    const { id, otp, shop } = req.body;
 
     // validation
-    if (!otp || !shop) {
+    if (!id || !otp || !shop) {
       return res.status(400).send('Missing Required Parameters');
     }
 
@@ -51,7 +51,7 @@ exports.verifyOTP = async (req, res) => {
     }
 
     // create user by making a POST request to Shopify Admin API
-    const customer = await Customer.findById('5f29409abc265644280aee14', {
+    const customer = await Customer.findById(id, {
       _id: 0,
     });
     console.log('customer', customer);
@@ -73,4 +73,16 @@ exports.verifyOTP = async (req, res) => {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');
   }
+};
+
+exports.showOTPVerification = (req, res) => {
+  const { id, shop } = req.query;
+
+  // validation
+  if (!id || !shop) {
+    return res.status(400).send('Missing Required Parameters');
+  }
+
+  res.set('Content-Type', 'application/liquid');
+  return res.status(200).render('otp-verification', { id, shop });
 };
