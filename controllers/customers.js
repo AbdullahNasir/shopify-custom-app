@@ -1,8 +1,6 @@
-// const axios = require('axios');
+const axios = require('../utils/axios-for-shopify');
 const Shop = require('../models/Shop');
 const Customer = require('../models/Customer');
-
-const axios = require('../utils/axios-for-shopify');
 
 exports.sendOTP = async (req, res) => {
   try {
