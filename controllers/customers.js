@@ -4,7 +4,7 @@ const Customer = require('../models/Customer');
 
 exports.sendOTP = async (req, res) => {
   try {
-    // grab customer phone number
+    // grab required data
     const { first_name, last_name, email, phone, password, shop } = req.body;
 
     // validation
@@ -51,18 +51,18 @@ exports.verifyOTP = async (req, res) => {
     }
 
     // create user by making a POST request to Shopify Admin API
-    const customer = await Customer.findById(id, {
-      _id: 0,
-    });
-    console.log('customer', customer);
-    const { data } = await axios(access_token).post(
+    const customer = await Customer.findById(id);
+    await axios(access_token).post(
       `https://${shop}/admin/api/2020-07/customers.json`,
       {
         customer,
       }
     );
-    console.log('data', data);
-    // redirect to success page
+
+    // delete customer from local DB
+    await customer.deleteOne();
+
+    // redirect to login page
     return res.redirect(`https://${shop}/account/login`);
   } catch (error) {
     console.log('error', error);
@@ -70,7 +70,7 @@ exports.verifyOTP = async (req, res) => {
   }
 };
 
-exports.showOTPVerification = (req, res) => {
+exports.showOTPVerificationPage = (req, res) => {
   const { id, shop } = req.query;
 
   // validation
