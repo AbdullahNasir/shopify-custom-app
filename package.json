@@ -14,7 +14,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "liquidjs": "^9.15.0",
-    "mongoose": "^5.9.27"
+    "mongoose": "^5.9.27",
+    "shopify-node-api": "^1.11.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

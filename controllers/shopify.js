@@ -1,22 +1,24 @@
-const axios = require('axios');
 const Shop = require('../models/Shop');
+const shopifyAPI = require('shopify-node-api');
 const { shopifyScopes } = require('../constants');
+
+const config = {
+  shopify_api_key: process.env.SHOPIFY_API_KEY,
+  shopify_shared_secret: process.env.SHOPIFY_API_SECRET,
+  shopify_scope: shopifyScopes.join(' '),
+  redirect_uri: `${process.env.NGROK_APP_URL}/shopify/callback`,
+  nonce: process.env.SHOPIFY_API_STATE,
+};
 
 exports.initiateAppAuthorization = async (req, res) => {
   try {
     const { shop } = req.query;
-    if (shop) {
-      const state = process.env.SHOPIFY_API_STATE;
-      const redirectURI = `${process.env.NGROK_APP_URL}/shopify/callback`;
-      const installURL = `https://${shop}/admin/oauth/authorize?client_id=${
-        process.env.SHOPIFY_API_KEY
-      }&scope=${shopifyScopes.join(
-        ' '
-      )}&state=${state}&redirect_uri=${redirectURI}`;
-      return res.redirect(installURL);
-    } else {
-      return res.status(400).send('Missinge shop parameter');
-    }
+    const Shopify = new shopifyAPI({
+      shop,
+      ...config,
+    });
+    const auth_url = Shopify.buildAuthURL();
+    return res.redirect(auth_url);
   } catch (error) {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');
@@ -25,48 +27,24 @@ exports.initiateAppAuthorization = async (req, res) => {
 
 exports.finishAppAuthorization = async (req, res) => {
   try {
-    const { shop, hmac, code, state } = req.query;
-    if (state !== process.env.SHOPIFY_API_STATE) {
-      return res.status(403).send('Request origin cannot be verified');
-    }
-
-    if (shop && hmac && code) {
-      // TODO
-      // Validate request is from Shopify
-      // Exchange temporary code for a permanent access token
-      const { data: credentials } = await axios.post(
-        `https://${shop}/admin/oauth/access_token`,
-        {
-          client_id: process.env.SHOPIFY_API_KEY,
-          client_secret: process.env.SHOPIFY_API_SECRET,
-          code,
-        }
-      );
-      console.log('credentials', credentials);
-
+    const { shop } = req.query;
+    const Shopify = new shopifyAPI({
+      shop,
+      ...config,
+    });
+    // exchange code for permanent access token
+    Shopify.exchange_temporary_token(req.query, async (error, data) => {
+      if (error) throw error;
       // save shop credentials in DB
       let newShop = new Shop({
         shop,
-        access_token: credentials.access_token,
-        scopes: credentials.scope.split(','),
+        access_token: data.access_token,
+        scopes: data.scope.split(','),
       });
       newShop = await newShop.save();
       console.log('newShop', newShop);
-
-      // Use access token to make API call to 'shop' endpoint
-      const responseShop = await axios.get(
-        `https://${shop}/admin/api/2020-07/shop.json`,
-        {
-          headers: {
-            'X-Shopify-Access-Token': credentials.access_token,
-          },
-        }
-      );
-      console.log('responseShop', responseShop.data);
-      return res.status(200).send(responseShop.data);
-    } else {
-      return res.status(400).send('Required parameters missing');
-    }
+    });
+    return res.status(200).send('Successfully Installed');
   } catch (error) {
     console.log('error', error);
     return res.status(500).send('Internal Server Error');
