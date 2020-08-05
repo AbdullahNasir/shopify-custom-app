@@ -1,6 +1,8 @@
-const axios = require('axios');
+// const axios = require('axios');
 const Shop = require('../models/Shop');
 const Customer = require('../models/Customer');
+
+const axios = require('../utils/axios-for-shopify');
 
 exports.sendOTP = async (req, res) => {
   try {
@@ -55,15 +57,10 @@ exports.verifyOTP = async (req, res) => {
       _id: 0,
     });
     console.log('customer', customer);
-    const { data } = await axios.post(
-      `https://plaantz.myshopify.com/admin/api/2020-07/customers.json`,
+    const { data } = await axios(access_token).post(
+      `https://${shop}/admin/api/2020-07/customers.json`,
       {
         customer,
-      },
-      {
-        headers: {
-          'X-Shopify-Access-Token': access_token,
-        },
       }
     );
     console.log('data', data);
