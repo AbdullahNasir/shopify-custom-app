@@ -92,9 +92,9 @@ exports.showOTPVerificationPage = (req, res) => {
   const { id, shop, redirect_uri } = req.query;
 
   // validation
-  if (!id || !shop || !redirect_uri) {
-    return res.status(400).send('Missing Required Parameters');
-  }
+  // if (!id || !shop || !redirect_uri) {
+  //   return res.status(400).send('Missing Required Parameters');
+  // }
 
   res.set('Content-Type', 'application/liquid');
   return res.status(200).render('otp-verification', { id, shop, redirect_uri });
