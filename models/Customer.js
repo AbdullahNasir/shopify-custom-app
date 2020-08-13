@@ -1,7 +1,30 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const CustomerSchema = new Schema(
+const addressSchema = new Schema({
+  address1: {
+    type: String,
+    required: true,
+  },
+  address2: {
+    type: String,
+    require: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  zip: {
+    type: String,
+    required: true,
+  },
+});
+
+const customerSchema = new Schema(
   {
     first_name: {
       type: String,
@@ -31,15 +54,16 @@ const CustomerSchema = new Schema(
       required: true,
       default: true,
     },
+    addresses: [addressSchema],
   },
   {
     versionKey: false,
   }
 );
 
-CustomerSchema.pre('save', function (next) {
+customerSchema.pre('save', function (next) {
   this.password_confirmation = this.get('password');
   next();
 });
 
-module.exports = Customer = mongoose.model('customer', CustomerSchema);
+module.exports = Customer = mongoose.model('customer', customerSchema);

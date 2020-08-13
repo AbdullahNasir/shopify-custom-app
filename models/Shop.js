@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ShopSchema = new Schema(
+const shopSchema = new Schema(
   {
     shop: {
       type: String,
@@ -22,4 +22,4 @@ const ShopSchema = new Schema(
   }
 );
 
-module.exports = Shop = mongoose.model('shop', ShopSchema);
+module.exports = Shop = mongoose.model('shop', shopSchema);
