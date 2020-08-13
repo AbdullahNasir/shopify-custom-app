@@ -6,6 +6,7 @@ const shopSchema = new Schema(
     shop: {
       type: String,
       required: true,
+      unique: true,
     },
     access_token: {
       type: String,
