@@ -28,12 +28,6 @@ app.get('/', (req, res) => {
   res.send('GET Home page');
 });
 
-app.post('/test', (req, res) => {
-  const { variant } = req.body;
-  console.log('variant', variant);
-  console.log('typeof variant', typeof variant);
-});
-
 app.use('/shopify', require('./routes/shopify'));
 app.use('/customers', require('./routes/customers'));
 
