@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const {
-  sendOTP,
-  verifyOTP,
+  placeOrder,
+  confirmOrder,
   showOTPVerificationPage,
 } = require('../controllers/customers');
 const verifyShopifyRequest = require('../middlewares/verify-shopify-request');
@@ -11,7 +11,7 @@ router.get(
   verifyShopifyRequest,
   showOTPVerificationPage
 );
-router.post('/send-otp', sendOTP);
-router.post('/verify-otp', verifyOTP);
+router.post('/place-order', placeOrder);
+router.post('/confirm-order', confirmOrder);
 
 module.exports = router;

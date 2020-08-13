@@ -3,7 +3,7 @@ const Shop = require('../models/Shop');
 
 const adminAPIVersion = process.env.SHOPIFY_ADMIN_API_VERSION;
 
-exports.sendOTP = async (req, res) => {
+exports.placeOrder = async (req, res) => {
   try {
     // grab required data
     const {
@@ -87,7 +87,7 @@ exports.sendOTP = async (req, res) => {
   }
 };
 
-exports.verifyOTP = async (req, res) => {
+exports.confirmOrder = async (req, res) => {
   try {
     // get user inputted otp
     const { id, otp, shop } = req.body;
