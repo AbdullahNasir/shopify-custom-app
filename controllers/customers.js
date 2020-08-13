@@ -1,5 +1,6 @@
 const axios = require('../utils/axios-for-shopify');
 const Shop = require('../models/Shop');
+const { verify_otp } = require('../constants/proxy-actions');
 
 const adminAPIVersion = process.env.SHOPIFY_ADMIN_API_VERSION;
 
@@ -79,7 +80,7 @@ exports.placeOrder = async (req, res) => {
 
     // redirect user to otp verification page
     res.redirect(
-      `https://${shop}/apps/verify-otp?id=${createdDraftOrder.draft_order['id']}&redirect_uri=${redirect_uri}`
+      `https://${shop}/apps/custom?action=${verify_otp}&id=${createdDraftOrder.draft_order['id']}&redirect_uri=${redirect_uri}`
     );
   } catch (error) {
     console.log('error', error);

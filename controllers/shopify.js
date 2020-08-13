@@ -1,6 +1,6 @@
 const Shop = require('../models/Shop');
 const shopifyAPI = require('shopify-node-api');
-const { shopifyScopes } = require('../constants');
+const shopifyScopes = require('../constants/shopify-scopes');
 
 const config = {
   shopify_api_key: process.env.SHOPIFY_API_KEY,

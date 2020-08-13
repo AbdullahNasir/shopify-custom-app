@@ -1,4 +1,4 @@
-exports.shopifyScopes = [
+module.exports = [
   'write_customers',
   'read_customers',
   'read_products',
