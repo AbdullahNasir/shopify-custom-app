@@ -30,5 +30,6 @@ app.get('/', (req, res) => {
 
 app.use('/shopify', require('./routes/shopify'));
 app.use('/customers', require('./routes/customers'));
+app.use('/proxy', require('./routes/proxy'));
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
