@@ -136,10 +136,12 @@ const makeDraftLineItems = (variants, quantity) => {
       quantity: quantity[idx] || 1,
     }));
   }
-  return {
-    variant_id: variants,
-    quantity: quantity || 1,
-  };
+  return [
+    {
+      variant_id: variants,
+      quantity: quantity || 1,
+    },
+  ];
 };
 
 const getShopAccessToken = async (shop) => {
